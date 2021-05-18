@@ -96,6 +96,14 @@ class LevelOne {
         this.traps[[x, y]].setStatus();
     }
 
+    deleteBox(box) {
+        delete this.boxes[[box.getX(), box.getY()]];
+    }
+
+    addBox(box) {
+        this.boxes[[box.getX(), box.getY()]] = box;
+    }
+
     pushBox(box, newX, newY) {
         this.setPassable(box.getX(), box.getY(), 1);
         delete this.boxes[[box.getX(), box.getY()]];

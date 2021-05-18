@@ -10,7 +10,7 @@ let map;
 
 async function gameStart() {
     asset = new Asset("asset", 32, ctx);
-    slime = new Slime("redSlimeMove", 32, 32, 1, 2, ctx);
+    slime = new Slime("greenSlimeMove", "greenSlimePush", 32, 32, 1, 2, ctx);
     map = new LevelOne(ctx, asset, 32);
     updateMap("down");
 }
@@ -18,7 +18,7 @@ async function gameStart() {
 function updateMap(direction) {
     map.drawFloor();
     map.drawTrap();
-    slime.draw(direction, 0);
+    slime.draw(direction, "move", 0);
     map.drawBoxBody();
     map.drawWall();
     map.drawDoor();
@@ -39,10 +39,11 @@ document.addEventListener("keyup", (event) => {
     if (event.key == "ArrowUp") {
 
         if (0 <= y-1 && map.isPassable(x, y-1)){
-            slime.move("up", map);
+            slime.move(direction, map);
         } else {
             let box = map.getBox(x, y-1);
             if (box && map.isPassable(x, y-2)) {
+                slime.push(direction, map, box);
                 map.pushBox(box, x, y-2);
             }
         }
@@ -51,10 +52,11 @@ document.addEventListener("keyup", (event) => {
     if (event.key == "ArrowDown") {
 
         if ((y+1 < map.getMapRow()) && map.isPassable(x, y+1)) {
-            slime.move("down", map);
+            slime.move(direction, map);
         } else {
             let box = map.getBox(x, y+1);
             if (box && map.isPassable(x, y+2)) {
+                slime.push(direction, map, box);
                map.pushBox(box, x, y+2);
             }
         }
@@ -62,10 +64,11 @@ document.addEventListener("keyup", (event) => {
 
     if (event.key == "ArrowLeft") {
         if (0 <= x-1 && map.isPassable(x-1, y)) {
-            slime.move("left", map);
+            slime.move(direction, map);
         } else {
             let box = map.getBox(x-1, y);
             if (box && map.isPassable(x-2, y)) {
+                slime.push(direction, map, box);
                 map.pushBox(box, x-2, y);
             } 
         }
@@ -73,15 +76,13 @@ document.addEventListener("keyup", (event) => {
     
     if (event.key == "ArrowRight") {
         if (0 <= x-1 && map.isPassable(x+1, y)) {
-            slime.move("right", map);
+            slime.move(direction, map);
         } else {
             let box = map.getBox(x+1, y);
             if (box && map.isPassable(x+2, y)) {
+                slime.push(direction, map, box);
                 map.pushBox(box, x+2, y);
             }
         }
     } // end if
-    
-    updateMap(direction);
-
 });
